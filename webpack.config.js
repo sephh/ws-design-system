@@ -1,6 +1,14 @@
+const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 module.exports = {
+  entry: './src/index.ts',
+
   output: {
-    publicPath: 'auto',
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+    libraryTarget: 'commonjs',
   },
 
   resolve: {
@@ -39,4 +47,23 @@ module.exports = {
       },
     ],
   },
-}
+
+  plugins: [
+    new CleanWebpackPlugin(),
+    new CopyPlugin({
+      patterns: [{
+        from: './package.json',
+        to: './package.json',
+        transform(content){
+          const packageJson = JSON.parse(content.toString());
+          // packageJson.peerDependencies = packageJson.dependencies;
+
+          delete packageJson.devDependencies;
+          delete packageJson.dependencies;
+
+          return JSON.stringify(packageJson)
+        }
+      }],
+    }),
+  ],
+};
