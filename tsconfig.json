@@ -4,6 +4,9 @@
     "paths": {
       "@utils/*": [
         "utils/*"
+      ],
+      "@components": [
+        "src/components"
       ]
     },
     "target": "es5",
@@ -25,5 +28,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "stories/**/*"]
 }
