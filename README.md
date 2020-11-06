@@ -46,3 +46,20 @@ const Template: Story<ButtonProps> = (args) => <Button {...args} >
 
 export const Primary = Template.bind({});
 ```
+
+## Teste
+
+Vamos criar o teste do Button:
+
+```
+import React from 'react';
+import { render } from '@utils/testing';
+import { Button } from '@components';
+
+describe('Button', () => {
+  test('should render', () => {
+    const { container } = render(<Button />, {});
+    expect(container).toBeTruthy();
+  });
+});
+```
