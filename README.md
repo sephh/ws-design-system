@@ -1,85 +1,65 @@
-# Setup
+# Primeiro Componente
 
-A primeira coisa que precisamos fazer é instalar e configurar o Storybook e o StyledComponents.
+O Objetivo agora é criar nosso primeiro componente e visualizá-lo no storybook.
 
-Então vamos lá.
+## Componente Button
 
-## Storybook
-
-Usaremos o CLI do storybook para instalá-lo.
+Vamos criar um componente usando o StyledComponent:
 
 ```
-npx sb init
-```
+import React from 'react';
+import styled from 'styled-components';
 
-Mova a pasta stories para a raiz e atualize o `./storybook/main`.
-
-```
-module.exports = {
-  "stories": [
-    "../stories/**/*.stories.mdx",
-    "../stories/**/*.stories.@(js|jsx|ts|tsx)"
-  ],
-  "addons": [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials"
-  ]
+export interface ButtonProps {
 }
+
+export const Button = styled.button<ButtonProps>`
+  padding: 8px 12px;
+  border-radius: 2px;
+  min-width: 100px;
+  cursor: pointer;
+  transition: background-color 0.2s linear, color 0.2s linear;
+`;
 ```
 
-Vamos evitar paths absolutos gigantescos configurando o paths do tsconfig.
+## Story
 
-Para isso precisamos instalar a devDependency `tsconfig-paths-webpack-plugin`:
-
-```
-npm install --save-dev tsconfig-paths-webpack-plugin
-```
-
-Atualizar o `./storybook/main.js`:
+Vamos criar a story do botão para que ele possa aparecer no Storybook.
 
 ```
-const path = require('path');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+import React from 'react';
+import { Story, Meta } from '@storybook/react/types-6-0';
 
-module.exports = {
-  "stories": [
-    "../stories/**/*.stories.mdx",
-    "../stories/**/*.stories.@(js|jsx|ts|tsx)"
-  ],
-  "addons": [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials"
-  ],
-  webpackFinal: async (config) => {
-    config.resolve.plugins = [
-      new TsconfigPathsPlugin({
-        configFile: path.resolve(__dirname, '../tsconfig.json')
-      }),
-    ];
+import { Button, ButtonProps } from '@components';
 
-    // Return the altered config
-    return config;
+export default {
+  title: 'Example/Button',
+  component: Button,
+  argTypes: {
+    backgroundColor: { control: 'color' },
   },
-}
+} as Meta;
+
+const Template: Story<ButtonProps> = (args) => <Button {...args} >
+  Botão
+</Button>;
+
+export const Primary = Template.bind({});
 ```
 
-No `tsconfig.json` adicione o path @components.
+## Teste
+
+Vamos criar o teste do Button:
 
 ```
-{
-  "compilerOptions": {
-    ...
-    "paths": {
-      ...
-      "@components": [
-        "src/components"
-      ]
-    },
-    ...
-```
+import React from 'react';
+import { render } from '@utils/testing';
+import { Button } from '@components';
 
-## StyledComponents
-
-```
-npm install --save styled-components polished
+describe('Button', () => {
+  test('should render', () => {
+    const { container } = render(<Button />, {});
+    expect(container).toBeTruthy();
+  });
+});
 ```
