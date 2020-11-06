@@ -1,7 +1,33 @@
 import { primaryFont } from './typography';
 import { gray, green, lima, red, yellow } from './colors';
 
-export const defaultTheme = {
+export interface ThemeStatus {
+  warningColor: string;
+  warningColorHover: string;
+  warningColorActive: string;
+  errorColor: string;
+  errorColorHover: string;
+  errorColorActive: string;
+  successColor: string;
+  successColorHover: string;
+  successColorActive: string;
+}
+
+export interface Theme{
+  primaryColor: string;
+  primaryHoverColor: string;
+  primaryActiveColor: string;
+  textColorOnPrimary: string;
+  textColor: string;
+  textColorInverted: string;
+  primaryFont: string;
+  disabled: string;
+  textOnDisabled: string;
+  buttonBorderRadius: string;
+  status: ThemeStatus;
+}
+
+export const defaultTheme: Theme = {
   primaryColor: green[800],
   primaryHoverColor: green[700],
   primaryActiveColor: green[500],
