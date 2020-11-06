@@ -1,11 +1,9 @@
 import React from 'react';
 
-const Button = () => {
+export const Button = () => {
     return (
         <div>
-            Bla
+            Picles
         </div>
     );
 };
-
-export default Button;
