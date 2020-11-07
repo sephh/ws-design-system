@@ -41,7 +41,7 @@ describe('Button', () => {
   test('should block', () => {
     const { btn, rerender } = setup();
 
-    rerender(<Button block />);
+    rerender(<Button block={true} />);
 
     expect(btn).toHaveStyleRule('display', 'block');
     expect(btn).toHaveStyleRule('width', '100%');

@@ -2,19 +2,27 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   entry: './src/index.ts',
 
   output: {
-    filename: 'main.js',
+    filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
-    libraryTarget: 'commonjs',
+    library: 'ws-design-system',
+    libraryTarget: 'commonjs2',
   },
+
+  externals: [nodeExternals()],
 
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
-    plugins: [new TsconfigPathsPlugin({/* options: see below */})]
+    plugins: [
+      new TsconfigPathsPlugin({
+        /* options: see below */
+      }),
+    ],
   },
 
   module: {
@@ -53,19 +61,21 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new CopyPlugin({
-      patterns: [{
-        from: './package.json',
-        to: './package.json',
-        transform(content){
-          const packageJson = JSON.parse(content.toString());
-          // packageJson.peerDependencies = packageJson.dependencies;
+      patterns: [
+        {
+          from: './package.json',
+          to: './package.json',
+          transform(content) {
+            const packageJson = JSON.parse(content.toString());
+            packageJson.peerDependencies = packageJson.dependencies;
 
-          delete packageJson.devDependencies;
-          delete packageJson.dependencies;
+            delete packageJson.devDependencies;
+            delete packageJson.dependencies;
 
-          return JSON.stringify(packageJson)
-        }
-      }],
+            return JSON.stringify(packageJson);
+          },
+        },
+      ],
     }),
   ],
 };

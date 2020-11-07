@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "baseUrl": ".",
     "paths": {
       "@utils/*": [
@@ -18,6 +20,8 @@
       "dom.iterable",
       "esnext"
     ],
+    "noImplicitAny": false,
+    "outDir": "./dist/",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -28,8 +32,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "noEmit": true,
     "jsx": "react"
   },
-  "include": ["src/**/*", "stories/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.tsx"]
 }
