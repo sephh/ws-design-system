@@ -2,6 +2,10 @@ import { primaryFont } from './typography';
 import {blue, gray, green, lemon, lima, red, yellow} from './colors';
 
 export interface ThemeStatus {
+  defaultColor: string;
+  defaultFontColor: string;
+  defaultColorHover: string;
+  defaultColorActive: string;
   secondaryColor: string;
   secondaryColorHover: string;
   secondaryColorActive: string;
@@ -45,6 +49,10 @@ export const defaultTheme: Theme = {
   textOnDisabled: gray[500],
   buttonBorderRadius: '16px',
   status: {
+    defaultColor: gray[200],
+    defaultFontColor: gray["A200"],
+    defaultColorHover: gray[400],
+    defaultColorActive: gray[800],
     secondaryColor: lemon[800],
     secondaryColorHover: lemon[700],
     secondaryColorActive: lemon[500],

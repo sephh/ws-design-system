@@ -12,9 +12,9 @@ export enum ButtonColor {
 }
 
 export interface ButtonProps {
-  color?: ButtonColor;
-  block?: boolean;
   disabled?: boolean;
+  block?: boolean;
+  color?: ButtonColor;
 }
 
 interface ColorMixin {
@@ -39,7 +39,15 @@ const colorMixin = (colors: ColorMixin) => `
     }
 `;
 
-export const colorSchema: {[key: string]: ColorMixin} = {
+export const defaultColorSchema: ColorMixin = {
+  fontColor: defaultTheme.status.defaultFontColor,
+  bgColor: defaultTheme.status.defaultColor,
+  hoverBgColor: defaultTheme.status.defaultColorHover,
+  activeBgColor: defaultTheme.status.defaultColorActive,
+  invertedFontColor: defaultTheme.textColorInverted,
+};
+
+export const colorSchema: { [key: string]: ColorMixin } = {
   [ButtonColor.Primary]: {
     bgColor: defaultTheme.primaryColor,
     fontColor: defaultTheme.textColorOnPrimary,
@@ -85,21 +93,17 @@ export const colorSchema: {[key: string]: ColorMixin} = {
 };
 
 const handleColor = (props: ButtonProps) => {
-  return props.color && colorMixin(colorSchema[props.color]);
+  if (!props.color || !colorSchema[props.color]) {
+    return colorMixin(defaultColorSchema);
+  }
+
+  return colorMixin(colorSchema[props.color]);
 };
 
-const handleBlock = ({ block }: ButtonProps) => {
-  if (block) {
-    return `
-      display: block;
-      width: 100%;
-    `;
-  }
-  return `
-    display: inline-block;
-    width: auto;
-  `;
-};
+const handleBlock = ({ block }: ButtonProps) => block && `
+  display: block; 
+  width: 100%;
+`;
 
 export const Button = styled.button<ButtonProps>`
   padding: 8px 12px;
@@ -107,15 +111,15 @@ export const Button = styled.button<ButtonProps>`
   min-width: 100px;
   cursor: pointer;
   border: 2px solid transparent;
-  font-size: 14px;
+  font-weight: 500;
   transition: background-color 0.2s linear, color 0.2s linear;
   font-family: ${defaultTheme.primaryFont};
-
+  
   ${handleBlock}
-
+  
   ${handleColor}
-
-  &:disabled {
+  
+  &:disabled{
     background-color: ${defaultTheme.disabled};
     color: ${defaultTheme.textOnDisabled};
     cursor: not-allowed;

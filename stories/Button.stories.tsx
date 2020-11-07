@@ -1,41 +1,30 @@
 import React from 'react';
-import { Meta, Story } from '@storybook/react/types-6-0';
+import { Story, Meta } from '@storybook/react';
 
-import { Button, ButtonProps } from '@components';
-import { ButtonColor } from '../src/components/Button/Button';
+import { Button as ButtonComponent, ButtonProps, ButtonColor } from '@components';
+
+const colorOptions = Object.keys(ButtonColor)
+    // @ts-ignore
+    .map(key => ButtonColor[key])
+    .filter(x => !(parseInt(x) >= 0))
 
 export default {
-  title: 'Example/Button',
-  component: Button,
+  title: 'Components/Button',
+  component: ButtonComponent,
   argTypes: {
     color: {
       control: {
         type: 'select',
-        // @ts-ignore
-        options: Object.keys(ButtonColor).map(key => ButtonColor[key]),
-      },
-    },
-    block: {
-      control: {
-        type: 'boolean'
+        options: ['nenhum', ...colorOptions]
       }
     },
-    disabled: {
-      control: {
-        type: 'boolean'
-      }
-    }
-  },
+    disabled: { control: 'boolean' },
+    block: { control: 'boolean' }
+  }
 } as Meta;
 
-const Template: Story<ButtonProps> = (args: ButtonProps) => <Button {...args} >
-  Acessar
-</Button>;
+const Template: Story<ButtonProps> = (args: ButtonProps) => (
+    <ButtonComponent {...args}>Acessar</ButtonComponent>
+);
 
-export const Primary = Template.bind({});
-
-Primary.args = {
-  color: ButtonColor.Primary
-}
-
-
+export const Button = Template.bind({});
