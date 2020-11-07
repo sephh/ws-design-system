@@ -1,13 +1,19 @@
 import { primaryFont } from './typography';
-import { gray, green, lima, red, yellow } from './colors';
+import {blue, gray, green, lemon, lima, red, yellow} from './colors';
 
 export interface ThemeStatus {
+  secondaryColor: string;
+  secondaryColorHover: string;
+  secondaryColorActive: string;
   warningColor: string;
   warningColorHover: string;
   warningColorActive: string;
-  errorColor: string;
-  errorColorHover: string;
-  errorColorActive: string;
+  infoColor: string;
+  infoColorHover: string;
+  infoColorActive: string;
+  dangerColor: string;
+  dangerColorHover: string;
+  dangerColorActive: string;
   successColor: string;
   successColorHover: string;
   successColorActive: string;
@@ -35,16 +41,22 @@ export const defaultTheme: Theme = {
   textColor: gray[600],
   textColorInverted: gray[100],
   primaryFont: primaryFont,
-  disabled: gray[400],
-  textOnDisabled: gray[300],
+  disabled: gray[300],
+  textOnDisabled: gray[500],
   buttonBorderRadius: '16px',
   status: {
+    secondaryColor: lemon[800],
+    secondaryColorHover: lemon[700],
+    secondaryColorActive: lemon[500],
     warningColor: yellow[100],
     warningColorHover: yellow[200],
     warningColorActive: yellow[300],
-    errorColor: red[100],
-    errorColorHover: red[200],
-    errorColorActive: red[300],
+    dangerColor: red[100],
+    dangerColorHover: red[200],
+    dangerColorActive: red[300],
+    infoColor: blue[100],
+    infoColorHover: blue[200],
+    infoColorActive: blue[300],
     successColor: lima[100],
     successColorHover: lima[200],
     successColorActive: lima[300],
