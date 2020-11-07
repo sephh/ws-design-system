@@ -7,6 +7,9 @@
       ],
       "@components": [
         "src/components"
+      ],
+      "@styles": [
+        "src/styles"
       ]
     },
     "target": "es5",
