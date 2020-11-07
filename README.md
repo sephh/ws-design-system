@@ -1,6 +1,6 @@
 # Setup
 
-A primeira coisa que precisamos fazer é instalar e configurar o Storybook e o StyledComponents.
+A primeira coisa que precisamos fazer é instalar e configurar o Storybook.
 
 Então vamos lá.
 
@@ -76,10 +76,4 @@ No `tsconfig.json` adicione o path @components.
       ]
     },
     ...
-```
-
-## StyledComponents
-
-```
-npm install --save styled-components polished styled-components-modifiers
 ```
