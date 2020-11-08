@@ -1,24 +1,37 @@
 import React from 'react';
 import { render } from '@utils/testing';
-import { Button } from '@components';
-import { ButtonColor, colorSchema } from '../Button';
+import {Button, ColorMixin, colorSchema, defaultColorSchema, ButtonColor} from '@components';
 import { defaultTheme } from '@styles';
 
 const setup = () => {
-  const label = 'Picles';
-  const renderResult = render(
-    <Button color={ButtonColor.Primary} disabled>
-      {label}
-    </Button>,
-    {}
-  );
+  const label = 'Acessar';
+  const renderResult = render(<Button>{label}</Button>, {});
   const btn = renderResult.getByText(label);
+
   return {
     ...renderResult,
-    label,
     btn,
+    label,
   };
 };
+
+const assertAboutColors = (btn: Element, schema: ColorMixin) => {
+  expect(btn).toHaveStyleRule('color', schema.fontColor);
+  expect(btn).toHaveStyleRule('background-color', schema.bgColor);
+
+  expect(btn).toHaveStyleRule('background-color', schema.hoverBgColor, {
+    modifier: ':hover',
+  });
+  expect(btn).toHaveStyleRule('background-color', schema.hoverBgColor, {
+    modifier: ':focus',
+  });
+  expect(btn).toHaveStyleRule('color', schema.invertedFontColor, {
+    modifier: ':active',
+  });
+  expect(btn).toHaveStyleRule('background-color', schema.activeBgColor, {
+    modifier: ':active',
+  });
+}
 
 describe('Button', () => {
   test('should render', () => {
@@ -26,10 +39,9 @@ describe('Button', () => {
     expect(container).toBeInTheDocument();
   });
 
-  test('should disable', () => {
+  test('should be disabled', () => {
     const { btn } = setup();
 
-    expect(btn).toBeDisabled();
     expect(btn).toHaveStyleRule('background-color', defaultTheme.disabled, {
       modifier: ':disabled',
     });
@@ -38,13 +50,19 @@ describe('Button', () => {
     });
   });
 
-  test('should block', () => {
+  test('should be block', () => {
     const { btn, rerender } = setup();
 
-    rerender(<Button block={true} />);
+    rerender(<Button block />);
 
     expect(btn).toHaveStyleRule('display', 'block');
     expect(btn).toHaveStyleRule('width', '100%');
+  });
+
+  test('should have default colors', () => {
+    const { btn } = setup();
+
+    assertAboutColors(btn, defaultColorSchema)
   });
 
   test('should have correct colors', () => {
@@ -55,21 +73,7 @@ describe('Button', () => {
       const schema = colorSchema[color];
       rerender(<Button color={color as ButtonColor} />);
 
-      expect(btn).toHaveStyleRule('color', schema.fontColor);
-      expect(btn).toHaveStyleRule('background-color', schema.bgColor);
-
-      expect(btn).toHaveStyleRule('background-color', schema.hoverBgColor, {
-        modifier: ':hover',
-      });
-      expect(btn).toHaveStyleRule('background-color', schema.hoverBgColor, {
-        modifier: ':focus',
-      });
-      expect(btn).toHaveStyleRule('color', schema.invertedFontColor, {
-        modifier: ':active',
-      });
-      expect(btn).toHaveStyleRule('background-color', schema.activeBgColor, {
-        modifier: ':active',
-      });
+      assertAboutColors(btn, schema);
     }
   });
 });

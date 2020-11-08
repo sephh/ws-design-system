@@ -1,207 +1,158 @@
-# Variações do Componente
+# Testando o componente
 
-Agora vamos aplicar alguns estados diferentes nos nosso componente.
-
-## CSS global no Storybook
-
-Antes, vamos mudar a font dos componentes apresentados pelo Storybook. 
-
-Criaremos o arquivo `preview-head.html` e adicionaremos a nossa tag de estilo com a font desejada.
-
-```
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap');
-</style>
-```
-
-E atualizaremos o estilo do nosso botão:
-
-```
-font-weight: 500;
-transition: background-color 0.2s linear, color 0.2s linear;
-```
+Vamos testar o componente na mesma ordem que fizemos a sua implementação: do mais fácil para o mais difícil.
 
 ## Disabled
 
-O primeiro estado vai ser bem fácil, é apenas a indicação de que o nosso botão está desabilitado.
+Para testar o disabled, vamos usar uma extensão do jest que tem alguns helpers interessantes para o contexto de styled-components, o [jest-styled-components](https://www.npmjs.com/package/jest-styled-components).
 
-Vamos atualizar a interface ButtonProps, para adicionar essa propriedade:
-
-```
-export interface ButtonProps {
-  disabled?: boolean;
-}
-```
-
-Agora basta adicionar esse trecho de código, no componente:
+O Teste fica assim:
 
 ```
-&:disabled{
-    background-color: ${defaultTheme.disabled};
-    color: ${defaultTheme.textOnDisabled};
-    cursor: not-allowed;
-}
+test('should be disabled', () => {
+    const { getByText } = render(
+      <Button color={ButtonColor.Primary} disabled>
+        Acessar
+      </Button>,
+      {}
+    );
+    
+    const btn = getByText('Acessar');
+    expect(btn).toHaveStyleRule('background-color', defaultTheme.disabled, {
+      modifier: ':disabled',
+    });
+    expect(btn).toHaveStyleRule('color', defaultTheme.textOnDisabled, {
+      modifier: ':disabled',
+    });
+});
 ```
 
 ## Block
 
-Agora se o botão tiver a propriedade block como true, ele terá o tamanho do seu container;
+A renderização dos nossos testes começou a ficar muito repetitiva, é um indicativo de que devemos refatorar.
 
-Precisamos atualizar novamente a nossa interface de propriedades:
+Vamos criar uma função de setup:
 
 ```
-export interface ButtonProps {
-  disabled?: boolean;
-  block?: boolean;
+const setup = () => {
+    const label = 'Acessar';
+    const renderResult = render(
+        <Button>
+            {label}
+        </Button>,
+        {}
+    );
+    const btn = renderResult.getByText(label);
+
+    return {
+        ...renderResult,
+        btn,
+        label
+    }
 }
 ```
 
-E poderíamos atingir o nosso objeto assim:
+E reescrever os nossos testes:
 
 ```
-${props => props.block && `
-    display: block;
-    width: 100%;
-`}
+describe('Button', () => {
+  test('should render', () => {
+    const { container } = setup();
+    expect(container).toBeInTheDocument();
+  });
+
+  test('should be disabled', () => {
+    const { btn } = setup();
+
+    expect(btn).toHaveStyleRule('background-color', defaultTheme.disabled, {
+      modifier: ':disabled',
+    });
+      expect(btn).toHaveStyleRule('color', defaultTheme.textOnDisabled, {
+          modifier: ':disabled',
+      });
+  });
+});
 ```
 
-Porém, gosto de separar em funções a maior parte das situações que requerem lógica ou precisam acessar diretamente as propriedades do componente.
+Pronto, podemos agora criar o teste de block:
 
 ```
-const handleBlock = ({ block }: ButtonProps) => block && `
-  display: block; 
-  width: 100%;
-`;
-``` 
+test('should be block', () => {
+    const { btn, rerender } = setup();
+    
+    rerender(<Button block />);
+    
+    expect(btn).toHaveStyleRule('display', 'block');
+    expect(btn).toHaveStyleRule('width', '100%');
+});
+```
 
 ## Color
 
-Vamos definir 6 estilos de cores e mais 1 fallback, parece bem trabalhoso, veremos.
-
-Primeiro atualizamos a nossa interface e adicionamos um enum para guardar os possíveis valores.
+Para as cores, começaremos verificando a cor default:
 
 ```
-export enum ButtonColor {
-  Primary = 'primary',
-  Secondary = 'secondary',
-  Danger = 'danger',
-  Info = 'info',
-  Success = 'success',
-  Warning = 'warning',
+test('should have defaultColors', () => {
+    const { btn } = setup();
+
+    expect(btn).toHaveStyleRule('color', defaultColorSchema.fontColor);
+    expect(btn).toHaveStyleRule('background-color', defaultColorSchema.bgColor);
+
+    expect(btn).toHaveStyleRule('background-color', defaultColorSchema.hoverBgColor, {
+      modifier: ':hover',
+    });
+    expect(btn).toHaveStyleRule('background-color', defaultColorSchema.hoverBgColor, {
+      modifier: ':focus',
+    });
+    expect(btn).toHaveStyleRule('color', defaultColorSchema.invertedFontColor, {
+      modifier: ':active',
+    });
+    expect(btn).toHaveStyleRule('background-color', defaultColorSchema.activeBgColor, {
+      modifier: ':active',
+    });
+});
+```
+
+E agora todas as cores. Como queremos testar as mesmas variáveis do teste anterior, podemos criar uma função para evitar repetição.
+
+```
+const assertAboutColors = (btn: Element, schema: ColorMixin) => {
+  expect(btn).toHaveStyleRule('color', schema.fontColor);
+  expect(btn).toHaveStyleRule('background-color', schema.bgColor);
+
+  expect(btn).toHaveStyleRule('background-color', schema.hoverBgColor, {
+    modifier: ':hover',
+  });
+  expect(btn).toHaveStyleRule('background-color', schema.hoverBgColor, {
+    modifier: ':focus',
+  });
+  expect(btn).toHaveStyleRule('color', schema.invertedFontColor, {
+    modifier: ':active',
+  });
+  expect(btn).toHaveStyleRule('background-color', schema.activeBgColor, {
+    modifier: ':active',
+  });
 }
 ```
 
-```
-export interface ButtonProps {
-  color?: ButtonColor;
-  block?: boolean;
-  disabled?: boolean;
-}
-```
-
-Todas as cores terão variação de estado como hover, focus, active e idle. 
-
-Para idle vamos alterar background e color, para hover e focus, o background e para active outro background e color.
-
-Poderíamos criar um estilo para cada um deles, mas podemos utilizar os poderes adquiridos com a ferramenta.
-
-Vamos criar um "mixin", para fazer uma relaxa com os preprocessadores de CSS:
+E os testes ficariam assim:
 
 ```
-interface ColorMixin {
-  bgColor: string;
-  fontColor: string;
-  invertedFontColor: string;
-  activeBgColor: string;
-  hoverBgColor: string;
-}
+test('should have default colors', () => {
+    const { btn } = setup();
 
-const colorMixin = (colors: ColorMixin) => `
-    background-color: ${colors.bgColor};
-    color: ${colors.fontColor};
+    assertAboutColors(btn, defaultColorSchema)
+});
 
-    &:hover, &:focus {
-      background-color: ${colors.hoverBgColor};
+test('should have correct colors', () => {
+    const { btn, rerender } = setup();
+    const colors = Object.keys(colorSchema);
+
+    for (let color of colors) {
+      const schema = colorSchema[color];
+      rerender(<Button color={color as ButtonColor} />);
+
+      assertAboutColors(btn, schema);
     }
-
-    &:active {
-      background-color: ${colors.activeBgColor};
-      color: ${colors.invertedFontColor};
-    }
-`;
-```
-
-E precisamos definir os nossos esquemas de cores:
-
-```
-export const defaultColorSchema: ColorMixin = {
-  fontColor: defaultTheme.status.defaultFontColor,
-  bgColor: defaultTheme.status.defaultColor,
-  hoverBgColor: defaultTheme.status.defaultColorHover,
-  activeBgColor: defaultTheme.status.defaultColorActive,
-  invertedFontColor: defaultTheme.textColorInverted,
-};
-
-export const colorSchema: { [key: string]: ColorMixin } = {
-  [ButtonColor.Primary]: {
-    bgColor: defaultTheme.primaryColor,
-    fontColor: defaultTheme.textColorOnPrimary,
-    invertedFontColor: defaultTheme.textColorOnPrimary,
-    activeBgColor: defaultTheme.primaryActiveColor,
-    hoverBgColor: defaultTheme.primaryHoverColor,
-  },
-  [ButtonColor.Secondary]: {
-    bgColor: defaultTheme.status.secondaryColor,
-    fontColor: defaultTheme.textColorInverted,
-    invertedFontColor: defaultTheme.textColorInverted,
-    activeBgColor: defaultTheme.status.secondaryColorActive,
-    hoverBgColor: defaultTheme.status.secondaryColorHover,
-  },
-  [ButtonColor.Danger]: {
-    bgColor: defaultTheme.status.dangerColor,
-    fontColor: defaultTheme.status.dangerColorActive,
-    invertedFontColor: defaultTheme.textColorInverted,
-    activeBgColor: defaultTheme.status.dangerColorActive,
-    hoverBgColor: defaultTheme.status.dangerColorHover,
-  },
-  [ButtonColor.Info]: {
-    bgColor: defaultTheme.status.infoColor,
-    fontColor: defaultTheme.status.infoColorActive,
-    invertedFontColor: defaultTheme.textColorInverted,
-    activeBgColor: defaultTheme.status.infoColorActive,
-    hoverBgColor: defaultTheme.status.infoColorHover,
-  },
-  [ButtonColor.Success]: {
-    bgColor: defaultTheme.status.successColor,
-    fontColor: defaultTheme.status.successColorActive,
-    invertedFontColor: defaultTheme.textColorInverted,
-    activeBgColor: defaultTheme.status.successColorActive,
-    hoverBgColor: defaultTheme.status.successColorHover,
-  },
-  [ButtonColor.Warning]: {
-    bgColor: defaultTheme.status.warningColor,
-    fontColor: defaultTheme.status.warningColorActive,
-    invertedFontColor: defaultTheme.textColorInverted,
-    activeBgColor: defaultTheme.status.warningColorActive,
-    hoverBgColor: defaultTheme.status.warningColorHover,
-  },
-};
-```
-
-Assim como fizemos no block, vamos criar uma função para gerenciar todas as possibilidades:
-
-```
-const handleColor = (props: ButtonProps) => {
-  if (!props.color || !colorSchema[props.color]) {
-    return colorMixin(defaultColorSchema);
-  }
-
-  return colorMixin(colorSchema[props.color]);
-};
-```
-
-Agora é só colocar a função no componente e testar:
-
-```
-${handleBlock}
+});
 ```
