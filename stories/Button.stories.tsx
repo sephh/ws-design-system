@@ -1,6 +1,15 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Story, Meta } from '@storybook/react';
+import {
+  Title,
+  Subtitle,
+  Description,
+  Primary,
+  ArgsTable,
+  Stories,
+  PRIMARY_STORY
+} from '@storybook/addon-docs/blocks';
 
 import { Button as ButtonComponent, ButtonProps, ButtonColor } from '@components';
 import { darkTheme, defaultTheme } from '../src/styles';
@@ -43,6 +52,26 @@ export default {
         options: Object.keys(themeMap)
       },
       defaultValue: 'default'
+    },
+    ref: {
+      table: {
+        disable: true
+      }
+    },
+    theme: {
+      table: {
+        disable: true
+      }
+    },
+    as: {
+      table: {
+        disable: true
+      }
+    },
+    forwardedAs: {
+      table: {
+        disable: true
+      }
     }
   }
 } as Meta;
@@ -52,3 +81,23 @@ const Template: Story<ButtonProps> = (args: ButtonProps) => (
 );
 
 export const Button = Template.bind({});
+
+export const DefaultTheme = () => <ThemeProvider theme={defaultTheme}>
+  <ButtonComponent>Default</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Primary}>Primary</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Secondary}>Secondary</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Danger}>Danger</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Success}>Success</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Warning}>Warning</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Info}>Info</ButtonComponent>
+</ThemeProvider>;
+
+export const DarkTheme = () => <ThemeProvider theme={darkTheme}>
+  <ButtonComponent>Default</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Primary}>Primary</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Secondary}>Secondary</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Danger}>Danger</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Success}>Success</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Warning}>Warning</ButtonComponent> {' '}
+  <ButtonComponent color={ButtonColor.Info}>Info</ButtonComponent>
+</ThemeProvider>;

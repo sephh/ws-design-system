@@ -12,6 +12,9 @@
       ],
       "@styles": [
         "src/styles"
+      ],
+      "@models": [
+        "src/models"
       ]
     },
     "target": "es5",

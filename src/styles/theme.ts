@@ -1,4 +1,4 @@
-import { primaryFont } from './typography';
+import { primaryFont, textFont } from './typography';
 import {blue, gray, green, lemon, lima, red, yellow} from './colors';
 
 export interface ThemeStatus {
@@ -31,6 +31,7 @@ export interface Theme{
   textColor: string;
   textColorInverted: string;
   primaryFont: string;
+  textFont: string;
   disabled: string;
   textOnDisabled: string;
   buttonBorderRadius: string;
@@ -45,6 +46,7 @@ export const defaultTheme: Theme = {
   textColor: gray[600],
   textColorInverted: gray[100],
   primaryFont: primaryFont,
+  textFont: textFont,
   disabled: gray[300],
   textOnDisabled: gray[500],
   buttonBorderRadius: '16px',
@@ -80,6 +82,7 @@ export const darkTheme: Theme = {
   textColor: gray[600],
   textColorInverted: gray[100],
   primaryFont: primaryFont,
+  textFont: textFont,
   disabled: gray[300],
   textOnDisabled: gray[500],
   buttonBorderRadius: '0',

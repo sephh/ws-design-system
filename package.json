@@ -64,6 +64,7 @@
     "webpack-node-externals": "^2.5.2"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
     "polished": "^4.0.3",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

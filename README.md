@@ -1,19 +1,18 @@
-# Workshop Sobre Design System
+# Wrapper
 
-Esse repositório foi criado no intuito de passar conteúdo sobre Design System, Storybook e StyledComponents.
+Nós poderíamos criar todos os componentes do zero, mas provavelmente estaríamos reinventando a roda. Ao invés disso é mais produtivo escolher uma biblioteca validada pela comunidade para ser a base da nossa lib.
 
-Ele sera dividido em branches e cada uma delas terá um tema específico e um branch com a sua solução.
+Caso estejamos usando React ou Vue aconselho fortemente usar a estratégia de wrapper, caso precise mudar essa lib no futuro. É muito fácil no contexto desses dois Frameworks/Libs.
 
-## Design System
+No React para ter um wrapper basta usar o operador rest nas propriedades e no caso so Vue basta usar o $listeners e $attrs. 
 
-Design System, mais do que um guia de estilos é ponto de partida para todo o time. Nele estarão a biblioteca de componentes para os designers, a lib de UI e seu código, e a definição dos seus princípios na documentação. 
+Se você estiver usando Angular, terá que criar todos os Inputs e Outputs de cada componente e seu wrapper. Não aconselho que isso seja feito. Na minha opinião é melhor se conformar com o casamento com a lib escolhida. 
 
-Ele ajuda a escalar a produtividade tanto do time de design quanto o time de devs.
 
-## Storybook
+## Modal
 
-É uma ferramenta de UI que serve para documentar e experimentar os artefatos do DesignSystem, por exemplo.
+Como o nosso time gosta muito do Material, vamos adicioná-lo ao projeto e aproveitar o modal que já está construído, lá.
 
-## Styled Components
-
-É uma lib de CSS no JavaScript que nos ajuda a escrever o estilo dos nossos componentes React.
+```
+npm install @material-ui/core
+```

@@ -1,4 +1,5 @@
 export const primaryFont = '"Rubik", sans-serif';
+export const textFont = '"Roboto", sans-serif';
 
 export const typeScale = {
     header1: "1.8rem",

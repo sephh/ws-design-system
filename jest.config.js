@@ -6,6 +6,7 @@ module.exports = {
     '^@utils/(.*)$': '<rootDir>/utils/$1',
     '@components': '<rootDir>/src/components',
     '@styles': '<rootDir>/src/styles',
+    '@models': '<rootDir>/src/models',
   },
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(ts|tsx)$'],
   watchPlugins: [
