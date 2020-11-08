@@ -17,7 +17,7 @@ export interface ButtonProps {
   color?: ButtonColor;
 }
 
-interface ColorMixin {
+export interface ColorMixin {
   bgColor: string;
   fontColor: string;
   invertedFontColor: string;
