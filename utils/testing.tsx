@@ -1,30 +1,12 @@
-import React from 'react';
 import { render } from '@testing-library/react';
-import { ThemeProvider } from 'styled-components';
-import { defaultTheme } from '@styles';
 
-const Providers = ({ children, theme }: any) => {
-  return (
-    <ThemeProvider theme={theme}>
-      {children}
-    </ThemeProvider>
-  );
+const Providers = ({ children }: any) => {
+  return children;
 };
 
-function renderWithProviders(
-  ui,
-  {
-    theme = defaultTheme,
-    ...renderOptions
-  } = {}
-) {
-  function Wrapper({ children }) {
-    return <Providers theme={theme}>{children}</Providers>;
-  }
-
-  return render(ui, { wrapper: Wrapper as any, ...renderOptions });
-}
+const customRender = (ui: any, options = {}) =>
+  render(ui, { wrapper: Providers, ...options });
 
 export * from '@testing-library/react';
 
-export { renderWithProviders };
+export { customRender };
