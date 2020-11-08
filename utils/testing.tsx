@@ -1,24 +1,30 @@
+import React from 'react';
 import { render } from '@testing-library/react';
-// import { ThemeProvider } from "my-ui-lib"
-// import { TranslationProvider } from "my-i18n-lib"
-// import defaultStrings from "i18n/en-x-default"
+import { ThemeProvider } from 'styled-components';
+import { defaultTheme } from '@styles';
 
-const Providers = ({ children }: any) => {
-  return children;
-  // return (
-  //   <ThemeProvider theme="light">
-  //     <TranslationProvider messages={defaultStrings}>
-  //       {children}
-  //     </TranslationProvider>
-  //   </ThemeProvider>
-  // )
+const Providers = ({ children, theme }: any) => {
+  return (
+    <ThemeProvider theme={theme}>
+      {children}
+    </ThemeProvider>
+  );
 };
 
-const customRender = (ui: any, options = {}) =>
-  render(ui, { wrapper: Providers, ...options });
+function renderWithProviders(
+  ui,
+  {
+    theme = defaultTheme,
+    ...renderOptions
+  } = {}
+) {
+  function Wrapper({ children }) {
+    return <Providers theme={theme}>{children}</Providers>;
+  }
 
-// re-export everything
+  return render(ui, { wrapper: Wrapper as any, ...renderOptions });
+}
+
 export * from '@testing-library/react';
 
-// override render method
-export { customRender };
+export { renderWithProviders };

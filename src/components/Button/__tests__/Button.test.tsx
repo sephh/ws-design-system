@@ -1,17 +1,18 @@
 import React from 'react';
-import { render } from '@utils/testing';
-import {Button, ColorMixin, colorSchema, defaultColorSchema, ButtonColor} from '@components';
+import { renderWithProviders } from '@utils/testing';
+import { Button, ColorMixin, colorSchema, defaultColorSchema, ButtonColor } from '@components';
 import { defaultTheme } from '@styles';
 
-const setup = () => {
+const setup = ({ theme = defaultTheme } = {}) => {
   const label = 'Acessar';
-  const renderResult = render(<Button>{label}</Button>, {});
+  const renderResult = renderWithProviders(<Button>{label}</Button>, { theme });
   const btn = renderResult.getByText(label);
 
   return {
     ...renderResult,
     btn,
     label,
+    theme
   };
 };
 
@@ -20,18 +21,18 @@ const assertAboutColors = (btn: Element, schema: ColorMixin) => {
   expect(btn).toHaveStyleRule('background-color', schema.bgColor);
 
   expect(btn).toHaveStyleRule('background-color', schema.hoverBgColor, {
-    modifier: ':hover',
+    modifier: ':hover'
   });
   expect(btn).toHaveStyleRule('background-color', schema.hoverBgColor, {
-    modifier: ':focus',
+    modifier: ':focus'
   });
   expect(btn).toHaveStyleRule('color', schema.invertedFontColor, {
-    modifier: ':active',
+    modifier: ':active'
   });
   expect(btn).toHaveStyleRule('background-color', schema.activeBgColor, {
-    modifier: ':active',
+    modifier: ':active'
   });
-}
+};
 
 describe('Button', () => {
   test('should render', () => {
@@ -40,13 +41,13 @@ describe('Button', () => {
   });
 
   test('should be disabled', () => {
-    const { btn } = setup();
+    const { btn, theme } = setup();
 
-    expect(btn).toHaveStyleRule('background-color', defaultTheme.disabled, {
-      modifier: ':disabled',
+    expect(btn).toHaveStyleRule('background-color', theme.disabled, {
+      modifier: ':disabled'
     });
-    expect(btn).toHaveStyleRule('color', defaultTheme.textOnDisabled, {
-      modifier: ':disabled',
+    expect(btn).toHaveStyleRule('color', theme.textOnDisabled, {
+      modifier: ':disabled'
     });
   });
 
@@ -60,20 +61,20 @@ describe('Button', () => {
   });
 
   test('should have default colors', () => {
-    const { btn } = setup();
+    const { btn, theme } = setup();
 
-    assertAboutColors(btn, defaultColorSchema)
+    assertAboutColors(btn, defaultColorSchema(theme));
   });
 
   test('should have correct colors', () => {
-    const { btn, rerender } = setup();
+    const { btn, rerender, theme } = setup();
     const colors = Object.keys(colorSchema);
 
     for (let color of colors) {
       const schema = colorSchema[color];
       rerender(<Button color={color as ButtonColor} />);
 
-      assertAboutColors(btn, schema);
+      assertAboutColors(btn, schema(theme));
     }
   });
 });
